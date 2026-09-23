@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aniniwaah Medical Centre - IT Logbook</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #2980b9;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --bg: #f4f7f6;
+            --border: #bdc3c7;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 { text-align: center; margin: 5px 0; }
+        h1 { color: var(--primary); font-size: 20px; }
+        h2 { color: #7f8c8d; font-size: 13px; margin-bottom: 20px; }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .tab-btn {
+            padding: 8px 12px;
+            border: none;
+            background: #ecf0f1;
+            cursor: pointer;
+            font-weight: bold;
+            color: #7f8c8d;
+            border-radius: 5px 5px 0 0;
+            font-size: 12px;
+            flex: 1;
+            min-width: 80px;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Reference Guide Box */
+        .guide-box {
+            background-color: #eaf2f8;
+            border-left: 5px solid var(--secondary);
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .guide-box h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 15px;
+        }
+        .guide-box ul {
+            margin: 0;
+            padding-left: 20px;
+            columns: 2;
+            -webkit-columns: 2;
+            -moz-columns: 2;
+        }
+        .guide-box li {
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #333;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+        label { font-weight: bold; margin-bottom: 4px; color: var(--primary); font-size: 13px; }
+        input, select, textarea {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea { resize: vertical; min-height: 60px; }
+        .row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .row > .form-group { flex: 1; min-width: 140px; }
+
+        /* Buttons */
+        .buttons { display: flex; gap: 8px; margin-top: 15px; flex-wrap: wrap; }
+        button.action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+            color: white;
+            font-size: 14px;
+        }
+        .btn-save { background-color: var(--success); }
+        .btn-clear { background-color: var(--danger); }
+        .btn-export { background-color: var(--secondary); }
+
+        /* Saved Data Cards (Mobile Friendly) */
+        .data-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--secondary);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            position: relative;
+        }
+        .data-card h4 {
+            margin: 0 0 8px 0;
+            color: var(--primary);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+            padding-right: 60px; 
+        }
+        .data-card p {
+            margin: 4px 0;
+            line-height: 1.4;
+        }
+        .data-card .label {
+            font-weight: bold;
+            color: #555;
+            display: inline-block;
+            width: 110px;
+        }
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        /* Delete Button */
+        .btn-delete {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>ANINIWAAH MEDICAL CENTRE</h1>
+    <h2>IT Daily Computers & System Check Logbook</h2>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab1', this)">1. Round</button>
+        <button class="tab-btn" onclick="switchTab('tab2', this)">2. Summary</button>
+        <button class="tab-btn" onclick="switchTab('tab3', this)">3. Issues</button>
+        <button class="tab-btn" onclick="switchTab('tab4', this)">📁 View</button>
+    </div>
+
+    <!-- TAB 1: MORNING ROUND -->
+    <div id="tab1" class="tab-content active">
+        
+        <div class="guide-box">
+            <h3>🔍 What to Check</h3>
+            <ul>
+                <li>Power-on / Windows startup</li>
+                <li>Monitor / display</li>
+                <li>Keyboard and mouse</li>
+                <li>System speed / freezing</li>
+                <li>Error messages / sounds</li>
+                <li>Hospital software OK</li>
+                <li>Overheating / hardware</li>
+                <li>Network connection</li>
+                <li>Internet access</li>
+                <li>Slow / intermittent net</li>
+                <li>Network cable / Wi-Fi</li>
+                <li>Shared resources access</li>
+                <li>Printer power / connection</li>
+                <li>Test printing OK</li>
+                <li>Paper / toner / ink OK</li>
+                <li>Paper jams / errors</li>
+                <li>Scanner operation</li>
+                <li>UPS / power backup</li>
+                <li>Barcode scanner</li>
+                <li>Adapters / chargers</li>
+            </ul>
+        </div>
+
+        <h3 style="color: var(--primary); margin-top: 10px; font-size: 16px;">Log Entry Details</h3>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Department / Unit *</label>
+                <input type="text" id="m_dept" placeholder="e.g., OPD, Emergency">
+            </div>
+            <div class="form-group">
+                <label>PC / User *</label>
+                <input type="text" id="m_pc" placeholder="e.g., PC2, Nurse Station">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Computer Condition</label>
+                <select id="m_condition">
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Poor">Poor</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Internet Status</label>
+                <select id="m_internet">
+                    <option value="OK">OK</option>
+                    <option value="No Internet">No Internet</option>
+                    <option value="Slow">Slow</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Printer Status</label>
+                <select id="m_printer">
+                    <option value="OK">OK</option>
+                    <option value="Offline">Offline</option>
+                    <option value="Paper Jam">Paper Jam</option>
+                    <option value="No Ink">No Ink</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Other Equipment</label>
+                <input type="text" id="m_other" placeholder="e.g., UPS, Scanner">
+            </div>
+            <div class="form-group">
+                <label>Initials</label>
+                <input type="text" id="m_initial" placeholder="Your Initials">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Issue Reported / Observation</label>
+            <textarea id="m_issue" placeholder="Describe the issue (e.g., OPD PC-03 no network)"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>Action Taken / Recommendation</label>
+            <textarea id="m_action" placeholder="e.g., Cable checked and reseated"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Status</label>
+            <select id="m_status">
+                <option value="Resolved">Resolved</option>
+                <option value="Open">Open</option>
+                <option value="Pending">Pending</option>
+            </select>
+        </div>
+
+        <div class="buttons">
+            <button type="button" class="action-btn btn-save" onclick="saveMorningRound()">Save Morning Round</button>
+            <button type="button" class="action-btn btn-clear" onclick="clearTab('tab1')">Clear Form</button>
+        </div>
+    </div>
+
+    <!-- TAB 2: DAILY SUMMARY REPORT -->
+    <div id="tab2" class="tab-content">
+        <h3 style="font-size: 16px;">Daily Summary Report</h3>
+        
+        <div class="row">
+            <div class="form-group">
+                <label>Intern Name</label>
+                <input type="text" id="s_intern" placeholder="Your Name">
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="s_date">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Departments Visited</label>
+            <input type="text" id="s_depts" placeholder="e.g., OPD, Emergency, Pharmacy">
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Computers With Issues</label>
+                <input type="number" id="s_num_pc" value="0">
+            </div>
+            <div class="form-group">
+                <label>Printers/Scanners Checked</label>
+                <input type="number" id="s_num_print" value="0">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label>Network Issues</label>
+                <input type="number" id="s_num_net" value="0">
+            </div>
+            <div class="form-group">
+                <label>Hardware Issues</label>
+                <input type="number" id="s_num_hw" value="0">
+            </div>
+            <div class="form-group">
+                <label>Software Issues</label>
+                <input type="number" id="s_num_sw" value="0">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Staff Issues Reported</label>
+            <textarea id="s_staff_issues"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Actions Taken</label>
+            <textarea id="s_actions"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Outstanding Issues</label>
+            <textarea id="s_outstanding"></textarea>
+        </div>
+        <div class="form-group">
+            <label>General Observation</label>
+            <textarea id="s_observation"></textarea>
+        </div>
+
+        <div class="buttons">
+            <button type="button" class="action-btn btn-save" onclick="saveDailySummary()">Save Daily Summary</button>
+            <button type="button" class="action-btn btn-clear" onclick="clearTab('tab2')">Clear Form</button>
+        </div>
+    </div>
+
+    <!-- TAB 3: ISSUE TRACKING REGISTER -->
+    <div id="tab3" class="tab-content">
+        <h3 style="font-size: 16px;">IT Issue Tracking Register</h3>
+        <p style="font-size: 12px; color: #7f8c8d;">Use this for problems unresolved after the morning round.</p>
+        
+        <div class="row">
+            <div class="form-group">
+                <label>Issue No. *</label>
+                <input type="text" id="i_no" placeholder="e.g., 001">
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="i_date">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" id="i_dept" placeholder="e.g., Pharmacy">
+            </div>
+            <div class="form-group">
+                <label>Equipment / User</label>
+                <input type="text" id="i_equip" placeholder="e.g., PC3">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Problem / Observation *</label>
+            <textarea id="i_problem" placeholder="Specific observation (e.g., OPD PC-03 has no network connection)"></textarea>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label>Priority</label>
+                <select id="i_priority">
+                    <option value="Low">Low</option>
+                    <option value="Med">Med</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select id="i_status">
+                    <option value="Open">Open</option>
+                    <option value="Closed">Closed</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label>Action Taken</label>
+                <input type="text" id="i_action" placeholder="What was done?">
+            </div>
+            <div class="form-group">
+                <label>Referred To</label>
+                <input type="text" id="i_referred" placeholder="Who is handling it?">
+            </div>
+            <div class="form-group">
+                <label>Date Resolved</label>
+                <input type="date" id="i_resolved">
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button type="button" class="action-btn btn-save" onclick="saveIssue()">Add Issue</button>
+            <button type="button" class="action-btn btn-clear" onclick="clearTab('tab3')">Clear Form</button>
+        </div>
+    </div>
+
+    <!-- TAB 4: VIEW DATA -->
+    <div id="tab4" class="tab-content">
+        <h3 style="font-size: 16px;">View Saved Data</h3>
+        
+        <div class="buttons" style="margin-bottom: 15px;">
+            <button type="button" class="action-btn btn-export" onclick="exportData('morning')" style="font-size: 12px;">Export Rounds (CSV)</button>
+            <button type="button" class="action-btn btn-export" onclick="exportData('summary')" style="font-size: 12px;">Export Summaries (CSV)</button>
+            <button type="button" class="action-btn btn-export" onclick="exportData('issues')" style="font-size: 12px;">Export Issues (CSV)</button>
+        </div>
+
+        <!-- Display Area for Saved Data -->
+        <div id="viewDataContainer">
+            <!-- Data will be injected here by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Database Setup ---
+    let db = JSON.parse(localStorage.getItem('amc_it_db')) || {
+        morning: [],
+        summary: [],
+        issues: []
+    };
+
+    // Ensure old data has unique IDs (Migration for existing users)
+    let migrated = false;
+    ['morning', 'summary', 'issues'].forEach(type => {
+        db[type] = db[type].map((item, index) => {
+            if (!item._id) {
+                item._id = 'id_' + index + '_' + Date.now();
+                migrated = true;
+            }
+            return item;
+        });
+    });
+    if (migrated) saveToStorage();
+
+    function saveToStorage() {
+        localStorage.setItem('amc_it_db', JSON.stringify(db));
+    }
+
+    // --- Tab Switching Logic ---
+    function switchTab(tabId, btnElement) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        btnElement.classList.add('active');
+
+        if (tabId === 'tab4') {
+            renderViewData();
+        }
+    }
+
+    // --- Form Clearing ---
+    function clearTab(tabId) {
+        const tab = document.getElementById(tabId);
+        tab.querySelectorAll('input, select, textarea').forEach(el => {
+            if (el.type === 'number') el.value = 0;
+            else el.value = '';
+        });
+    }
+
+    // --- Render Saved Data for Viewing ---
+    function renderViewData() {
+        const container = document.getElementById('viewDataContainer');
+        container.innerHTML = ''; 
+
+        let hasData = false;
+
+        // 1. Render Morning Rounds
+        if (db.morning.length > 0) {
+            hasData = true;
+            container.innerHTML += `<h4 style="color: var(--secondary); margin-top: 15px;">📋 Morning Rounds (${db.morning.length})</h4>`;
+            [...db.morning].reverse().forEach(entry => {
+                container.innerHTML += `
+                    <div class="data-card">
+                        <button type="button" class="btn-delete" onclick="deleteEntry('morning', '${entry._id}')">Delete</button>
+                        <h4>${entry.date} at ${entry.time}</h4>
+                        <p><span class="label">Department:</span> ${entry.dept}</p>
+                        <p><span class="label">PC / User:</span> ${entry.pc}</p>
+                        <p><span class="label">Condition:</span> ${entry.condition}</p>
+                        <p><span class="label">Internet:</span> ${entry.internet}</p>
+                        <p><span class="label">Printer:</span> ${entry.printer}</p>
+                        <p><span class="label">Other Equip:</span> ${entry.other || 'N/A'}</p>
+                        <p><span class="label">Issue:</span> ${entry.issue || 'None'}</p>
+                        <p><span class="label">Action:</span> ${entry.action || 'None'}</p>
+                        <p><span class="label">Status:</span> <strong>${entry.status}</strong></p>
+                        <p><span class="label">Initials:</span> ${entry.initial}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // 2. Render Daily Summaries
+        if (db.summary.length > 0) {
+            hasData = true;
+            container.innerHTML += `<h4 style="color: var(--secondary); margin-top: 15px;">📊 Daily Summaries (${db.summary.length})</h4>`;
+            [...db.summary].reverse().forEach(entry => {
+                container.innerHTML += `
+                    <div class="data-card">
+                        <button type="button" class="btn-delete" onclick="deleteEntry('summary', '${entry._id}')">Delete</button>
+                        <h4>${entry.date} - ${entry.intern}</h4>
+                        <p><span class="label">Depts Visited:</span> ${entry.depts}</p>
+                        <p><span class="label">PC Issues:</span> ${entry.num_pc}</p>
+                        <p><span class="label">Printer Checked:</span> ${entry.num_print}</p>
+                        <p><span class="label">Net Issues:</span> ${entry.num_net}</p>
+                        <p><span class="label">HW Issues:</span> ${entry.num_hw}</p>
+                        <p><span class="label">SW Issues:</span> ${entry.num_sw}</p>
+                        <p><span class="label">Staff Issues:</span> ${entry.staff_issues || 'None'}</p>
+                        <p><span class="label">Actions:</span> ${entry.actions || 'None'}</p>
+                        <p><span class="label">Outstanding:</span> ${entry.outstanding || 'None'}</p>
+                        <p><span class="label">Observation:</span> ${entry.observation || 'None'}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // 3. Render Issues
+        if (db.issues.length > 0) {
+            hasData = true;
+            container.innerHTML += `<h4 style="color: var(--secondary); margin-top: 15px;">⚠️ Issue Register (${db.issues.length})</h4>`;
+            [...db.issues].reverse().forEach(entry => {
+                container.innerHTML += `
+                    <div class="data-card" style="border-left-color: var(--danger);">
+                        <button type="button" class="btn-delete" onclick="deleteEntry('issues', '${entry._id}')">Delete</button>
+                        <h4>#${entry.id} - ${entry.date}</h4>
+                        <p><span class="label">Department:</span> ${entry.dept}</p>
+                        <p><span class="label">Equipment:</span> ${entry.equip}</p>
+                        <p><span class="label">Problem:</span> ${entry.problem}</p>
+                        <p><span class="label">Priority:</span> <strong>${entry.priority}</strong></p>
+                        <p><span class="label">Status:</span> <strong>${entry.status}</strong></p>
+                        <p><span class="label">Action Taken:</span> ${entry.action || 'None'}</p>
+                        <p><span class="label">Referred To:</span> ${entry.referred || 'N/A'}</p>
+                        <p><span class="label">Date Resolved:</span> ${entry.resolved || 'Not yet'}</p>
+                    </div>
+                `;
+            });
+        }
+
+        if (!hasData) {
+            container.innerHTML = `<div class="no-data">No data saved yet. Fill out a form and click Save to see it here.</div>`;
+        }
+    }
+// --- Delete Specific Entry (No Popup, Instant Delete) ---
+function deleteEntry(type, entryId) {
+// Change the button color to indicate it was tapped
+event.target.style.backgroundColor = "#000";
+event.target.innerText = "Deleting...";
+
+// Wait 200 milliseconds (so you can see the color change), then delete
+setTimeout(() => {
+// Find the item by its ID and remove it
+db[type] = db[type].filter(item => item._id !== entryId);
+saveToStorage();
+renderViewData(); // Refresh the list
+}, 200);
+}
+    // --- Morning Round Save ---
+    function saveMorningRound() {
+        const dept = document.getElementById('m_dept').value.trim();
+        const pc = document.getElementById('m_pc').value.trim();
+        
+        if (!dept || !pc) {
+            alert("Department and PC/User fields are required.");
+            return;
+        }
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-GB'); 
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const entry = {
+            _id: 'id_' + Date.now(), // <-- UNIQUE ID
+            date: dateStr,
+            time: timeStr,
+            dept: dept,
+            pc: pc,
+            condition: document.getElementById('m_condition').value,
+            internet: document.getElementById('m_internet').value,
+            printer: document.getElementById('m_printer').value,
+            other: document.getElementById('m_other').value.trim(),
+            issue: document.getElementById('m_issue').value.trim(),
+            action: document.getElementById('m_action').value.trim(),
+            status: document.getElementById('m_status').value,
+            initial: document.getElementById('m_initial').value.trim()
+        };
+
+        db.morning.push(entry);
+        saveToStorage();
+        alert("Morning round entry saved! Go to 'View' tab to see it.");
+        clearTab('tab1');
+    }
+
+    // --- Daily Summary Save ---
+    function saveDailySummary() {
+        const entry = {
+            _id: 'id_' + Date.now(),
+            intern: document.getElementById('s_intern').value.trim(),
+            date: document.getElementById('s_date').value,
+            depts: document.getElementById('s_depts').value.trim(),
+            num_pc: document.getElementById('s_num_pc').value,
+            num_print: document.getElementById('s_num_print').value,
+            num_net: document.getElementById('s_num_net').value,
+            num_hw: document.getElementById('s_num_hw').value,
+            num_sw: document.getElementById('s_num_sw').value,
+            staff_issues: document.getElementById('s_staff_issues').value.trim(),
+            actions: document.getElementById('s_actions').value.trim(),
+            outstanding: document.getElementById('s_outstanding').value.trim(),
+            observation: document.getElementById('s_observation').value.trim()
+        };
+
+        if (!entry.intern || !entry.date) {
+            alert("Intern Name and Date are required.");
+            return;
+        }
+
+        db.summary.push(entry);
+        saveToStorage();
+        alert("Daily summary saved! Go to 'View' tab to see it.");
+        clearTab('tab2');
+    }
+
+    // --- Issue Tracking Save ---
+    function saveIssue() {
+        const issueNo = document.getElementById('i_no').value.trim();
+        const problem = document.getElementById('i_problem').value.trim();
+
+        if (!issueNo || !problem) {
+            alert("Issue Number and Problem Description are required.");
+            return;
+        }
+
+        const entry = {
+            _id: 'id_' + Date.now(),
+            id: issueNo,
+            date: document.getElementById('i_date').value,
+            dept: document.getElementById('i_dept').value.trim(),
+            equip: document.getElementById('i_equip').value.trim(),
+            problem: problem,
+            priority: document.getElementById('i_priority').value,
+            status: document.getElementById('i_status').value,
+            action: document.getElementById('i_action').value.trim(),
+            referred: document.getElementById('i_referred').value.trim(),
+            resolved: document.getElementById('i_resolved').value
+        };
+
+        db.issues.push(entry);
+        saveToStorage();
+        alert("Issue added to register! Go to 'View' tab to see it.");
+        clearTab('tab3');
+    }
+
+    // --- Export to CSV ---
+    function exportData(type) {
+        const data = db[type];
+        if (data.length === 0) {
+            alert("No data to export for this section.");
+            return;
+        }
+
+        let headers = [];
+        let rows = [];
+
+        if (type === 'morning') {
+            headers = ["Date", "Time", "Department", "PC/User", "Condition", "Internet", "Printer", "Other Equipment", "Issue", "Action", "Status", "Initial"];
+            rows = data.map(d => [d.date, d.time, d.dept, d.pc, d.condition, d.internet, d.printer, d.other, d.issue, d.action, d.status, d.initial]);
+        } else if (type === 'summary') {
+            headers = ["Intern", "Date", "Depts Visited", "Num PCs with Issues", "Num Printers Checked", "Network Issues", "Hardware Issues", "Software Issues", "Staff Issues", "Actions Taken", "Outstanding", "Observation"];
+            rows = data.map(d => [d.intern, d.date, d.depts, d.num_pc, d.num_print, d.num_net, d.num_hw, d.num_sw, d.staff_issues, d.actions, d.outstanding, d.observation]);
+        } else if (type === 'issues') {
+            headers = ["Issue No", "Date", "Department", "Equipment/User", "Problem", "Priority", "Status", "Action Taken", "Referred To", "Date Resolved"];
+            rows = data.map(d => [d.id, d.date, d.dept, d.equip, d.problem, d.priority, d.status, d.action, d.referred, d.resolved]);
+        }
+
+        let csvContent = headers.join(",") + "\n";
+        rows.forEach(row => {
+            const cleanRow = row.map(val => `"${String(val).replace(/"/g, '""')}"`);
+            csvContent += cleanRow.join(",") + "\n";
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `AMC_${type}_Export.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Set default dates to today when the page loads
+    document.querySelectorAll('input[type="date"]').forEach(el => {
+        el.valueAsDate = new Date();
+    });
+
+</script>
+
+</body>
+</html>
